@@ -11,6 +11,8 @@ export default class initializationLoader extends Phaser.Scene {
     preload() {
         console.log("initializationLoader -> preload");
 
+        this.load.atlas('progressBar', 'assets/sprites/progressBar/spritesheet_progressBar.png', 'assets/sprites/progressBar/spritesheet_progressBar.json');
+        this.load.image('footing', 'assets/sprites/footing.png');
     }
 
     create() {
