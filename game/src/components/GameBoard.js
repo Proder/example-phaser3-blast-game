@@ -72,7 +72,7 @@ export default class GameBoard {
             for (let j = this.board.width - 1; j >= 0; j--) {
                 const boardItem = this.board.boardForm[i][j];
 
-                if (boardItem.tile === null || !boardItem.tile.active) {
+                if (boardItem.visible && (boardItem.tile === null || !boardItem.tile.active)) {
                     let delay = 300 * this.countNewLineTile;
                     let isNewTile;
                     [boardItem.tile, isNewTile] = this.searchTileForMove(i, j, boardItem);
@@ -226,7 +226,7 @@ export default class GameBoard {
      * @returns {boolean} - найдено ли совпадение.
      */
     check(i, j, type) {
-        return !!this.board.boardForm[i] && !!this.board.boardForm[i][j] && this.board.boardForm[i][j].tile.tileType === type;
+        return !!this.board.boardForm[i] && !!this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile.tileType === type;
     }
 
 }
