@@ -1,8 +1,9 @@
-import {boardForm} from "./testData";
-import Tile from "./Tile";
+import {boardForm} from "../components/testData";
+import Tile from "../components/Tile";
+import ViewBoard from "../components/ViewBoard";
 
 /**
- * Игровое поле.
+ * Контроллейр игрового поля.
  */
 export default class GameBoard {
     constructor(scene) {
@@ -10,12 +11,14 @@ export default class GameBoard {
 
         this.scene = scene;
 
+
         this.board = {
             width: 5,
             height: 5,
             boardForm: []
         };
         this.board.boardForm = boardForm;
+        this.board.boardView = new ViewBoard(this);
 
         // временный объект для построения игрового поля
         this.startPosition = {
@@ -30,12 +33,13 @@ export default class GameBoard {
 
         // количество свеже заполненных линий для учитывания задерки анимации
         this.countNewLineTile = 1;
+
     }
 
     /**
      * Построить игровое поле
      */
-    renderBoardForm() {
+    buildBoardForm() {
 
         for (let i = 0; i < this.board.height; i++) {
             let y = this.startPosition.y + this.startPosition.yMargin * i;
@@ -52,7 +56,7 @@ export default class GameBoard {
                 };
 
                 if (boardItem.visible) {
-                    this.scene.add.sprite(x, y, "backgroundBoard").setScale(0.55);
+                    this.board.boardView.AddBackgroundTile(x, y);
 
                     // перемещается ли сейчас фишка в данную ячейку
                     boardItem.nowMoved = false;
@@ -73,14 +77,13 @@ export default class GameBoard {
                 const boardItem = this.board.boardForm[i][j];
 
                 if (boardItem.visible && (boardItem.tile === null || !boardItem.tile.active)) {
-                    let delay = 300 * this.countNewLineTile;
+
                     let isNewTile;
                     [boardItem.tile, isNewTile] = this.searchTileForMove(i, j, boardItem);
 
                     if (isNewTile) {
                         flagNewTileLine = true;
                     } else {
-                        delay = 0;
                         this.board.boardForm[boardItem.tile.boartPosition.i][boardItem.tile.boartPosition.j].tile = null;
                     }
 
@@ -92,45 +95,7 @@ export default class GameBoard {
 
                     boardItem.tile.board = this;
 
-                    // Переменная для создания имитации отскока фишки при падении.
-                    const repeatPos = {
-                        x: Math.abs(boardItem.tile.x - boardItem.position.x) * 0.01,
-                        y: Math.abs(boardItem.tile.y - boardItem.position.y) * 0.01,
-                    };
-
-                    // проверка на необходимость запуска анимации. (чтобы избежать излишней задержки перед следующим ходом)
-                    if (boardItem.tile.x !== boardItem.position.x || boardItem.tile.y !== boardItem.position.y) {
-                        this.countMovedTiles++;
-
-                        // анимация перемещения фишки
-                        this.scene.tweens.add({
-                            targets: boardItem.tile,
-                            x: boardItem.position.x,
-                            y: boardItem.position.y,
-                            delay: delay,
-                            duration: 400,
-                            ease: 'Cubic.easeIn',
-                            onComplete: () => {
-                                if (repeatPos.x !== 0 || repeatPos.y !== 0) {
-
-                                    // анимация отскока фишки. (имитация падения)
-                                    this.scene.tweens.add({
-                                        targets: boardItem.tile,
-                                        x: "-=" + repeatPos.x,
-                                        y: "-=" + repeatPos.y,
-                                        duration: 50,
-                                        yoyo: true,
-                                        ease: 'Sine.easeInOut',
-                                        onComplete: () => {
-                                            this.countMovedTiles--;
-                                        },
-                                    });
-                                } else {
-                                    this.countMovedTiles--;
-                                }
-                            },
-                        });
-                    }
+                    this.board.boardView.MoveTileAnimation(boardItem, isNewTile);
                 }
             }
 
@@ -163,15 +128,9 @@ export default class GameBoard {
             const newTile = new Tile(this.scene, boardItem.position.x, boardItem.position.y);
             this.scene.add.existing(newTile);
 
-            this.scene.tweens.add({
-                targets: newTile,
-                scaleX: 0.55,
-                scaleY: 0.55,
-                alpha: 1,
-                delay: 300 * this.countNewLineTile,
-                duration: 200,
-                ease: 'Sine.easeInOut'
-            });
+            // запуск анимации создания новой фишки
+            this.board.boardView.NewTileAnimation(newTile);
+
             return [newTile, true];
         }
 
@@ -201,7 +160,13 @@ export default class GameBoard {
      */
     removeMatchTile(i, j, type) {
         if (this.board.boardForm[i][j].tile.active) {
-            this.board.boardForm[i][j].tile.destroy();
+
+            // Запуск анимации удаления фишки.
+            this.board.boardView.RemoveTileAnimation(this.board.boardForm[i][j].tile, this.board.boardForm[i][j].position, this.board.boardForm[i][j].tile.tileType);
+
+            // Зануляем ссылку на фишку
+            this.board.boardForm[i][j].tile = null;
+
 
             if (this.check(i - 1, j, type)) {
                 this.removeMatchTile(i - 1, j, type);
@@ -226,7 +191,7 @@ export default class GameBoard {
      * @returns {boolean} - найдено ли совпадение.
      */
     check(i, j, type) {
-        return !!this.board.boardForm[i] && !!this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile.tileType === type;
+        return !!this.board.boardForm[i] && !!this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile !== null && this.board.boardForm[i][j].tile.tileType === type;
     }
 
 }

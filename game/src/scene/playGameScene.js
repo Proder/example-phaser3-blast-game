@@ -1,5 +1,5 @@
 import {store} from "../store/";
-import GameBoard from "../components/GameBoard";
+import GameBoard from "../controler/GameBoard";
 
 
 export default class playGameScene extends Phaser.Scene {
@@ -20,7 +20,7 @@ export default class playGameScene extends Phaser.Scene {
 
         // создаем игровое поле.
         const gameBoard = new GameBoard(this);
-        gameBoard.renderBoardForm();
+        gameBoard.buildBoardForm();
         gameBoard.fillBoard();
     }
 }
