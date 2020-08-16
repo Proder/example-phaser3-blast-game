@@ -20,6 +20,12 @@ export default class GameBoard {
         this.board.boardForm = boardForm;
         this.board.boardView = new ViewBoard(this);
 
+        // временный объект отвечающий за задание. todo: создать questManager.
+        this.task = {
+            needScore: 200,
+            maxStep: 10
+        };
+
         // временный объект для построения игрового поля
         this.startPosition = {
             x: 120,
@@ -33,6 +39,8 @@ export default class GameBoard {
 
         // количество свеже заполненных линий для учитывания задерки анимации
         this.countNewLineTile = 1;
+
+        this.countRemoveTiles = 0;
 
     }
 
@@ -166,6 +174,7 @@ export default class GameBoard {
 
             // Зануляем ссылку на фишку
             this.board.boardForm[i][j].tile = null;
+            this.countRemoveTiles++;
 
 
             if (this.check(i - 1, j, type)) {

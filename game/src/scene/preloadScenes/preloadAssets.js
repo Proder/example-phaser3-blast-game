@@ -20,7 +20,10 @@ export default class preloadAssets extends Phaser.Scene {
         console.log("preloadAssets -> create");
 
 
-        this.scene.start("playGameScene");
+        const playGameScene = this.scene.get("playGameScene");
+        playGameScene.scene.start();
+
+        this.scene.start("UIPlayScene", {playGameScene: playGameScene});
         this.scene.stop();
     }
 

@@ -6,19 +6,25 @@ export default class Tile extends Phaser.GameObjects.Sprite {
         this.setScale(0);
         this.setAlpha(0);
 
-        this.setRandomFrame();
+        this.setRandomTileType();
 
         this.setInteractive();
         this.on("pointerdown", this.clickEvent, this);
     }
 
-    setRandomFrame() {
+    /**
+     * Задать случайный тиф фишки. (цвет)
+     */
+    setRandomTileType() {
         const arr = Object.keys(this.texture.frames).filter(word => word !== "__BASE");
 
         this.tileType = arr[Math.floor(Math.random() * arr.length)];
         this.setFrame(this.tileType);
     }
 
+    /**
+     * Обработчик нажатия по фишке.
+     */
     clickEvent() {
         console.log("clickEvent", this);
 
@@ -26,6 +32,11 @@ export default class Tile extends Phaser.GameObjects.Sprite {
 
         if (allowMove) {
             this.board.removeMatchTile(this.boartPosition.i, this.boartPosition.j, this.tileType);
+
+            console.log("Tile", this.board.countRemoveTiles);
+            this.board.scene.events.emit('changeScore', {countRemoveTiles: this.board.countRemoveTiles});
+
+            this.board.countRemoveTiles = 0;
             this.board.fillBoard();
         }
     }

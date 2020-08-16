@@ -40,6 +40,9 @@ module.exports = {
         new CopyPlugin([
             { from: 'src/assets', to: 'assets' },
         ]),
+        new CopyPlugin([
+            {from: 'public'}
+        ]),
         new webpack.DefinePlugin({
             "typeof CANVAS_RENDERER": JSON.stringify(true),
             "typeof WEBGL_RENDERER": JSON.stringify(true),

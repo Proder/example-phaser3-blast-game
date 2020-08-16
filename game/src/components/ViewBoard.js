@@ -116,8 +116,8 @@ export default class ViewBoard {
             x: 0, y: 0,
             lifespan: {min: 400, max: 1200},
             quantity: 4,
-            scale: {start: 0.3, end: 0},
-            alpha: {start: 0.5, end: 0},
+            scale: {start: 0.2, end: 0},
+            alpha: {start: 0.4, end: 0},
             speed: 100,
             gravityY: 550,
             blendMode: 'ADD'
