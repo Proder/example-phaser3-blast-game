@@ -14,6 +14,16 @@ export default class preloadAssets extends Phaser.Scene {
         this.load.atlas('tiles', 'assets/sprites/gameBoard/tiles/spritesheet_tiles.png', 'assets/sprites/gameBoard/tiles/spritesheet_tiles.json');
 
         this.load.image("backgroundBoard", "assets/sprites/gameBoard/backgroundBoard.png");
+
+        // UI
+        {
+            this.load.image("button-1", "assets/sprites/UI/button-1.png");
+            this.load.image("button-2", "assets/sprites/UI/button-2.png");
+            this.load.image("button-booster", "assets/sprites/UI/button-booster.png");
+            this.load.image("button-pause", "assets/sprites/UI/button-pause.png");
+            this.load.image("money-icon", "assets/sprites/UI/money-icon.png");
+            this.load.image("panel-quest", "assets/sprites/UI/panel-quest.png");
+        }
     }
 
     create() {

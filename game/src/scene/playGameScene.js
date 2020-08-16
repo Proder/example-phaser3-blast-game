@@ -38,8 +38,19 @@ export default class playGameScene extends Phaser.Scene {
             context.userGameParam.score += Math.pow(data.countRemoveTiles, 2);
             context.userGameParam.step++;
 
-            context.UIPlayScene.events.emit('level_progress', context.userGameParam.score/context.gameBoard.task.needScore);
-            context.UIPlayScene.events.emit('changeScore');
+            context.UIPlayScene.events.emit('level_progress', context.userGameParam.score / context.gameBoard.task.needScore);
+            context.UIPlayScene.events.emit('changeScore', context.userGameParam.score);
+            context.UIPlayScene.events.emit('changeStepCount', context.gameBoard.task.maxStep - context.userGameParam.step);
+
+
+            if (context.checkWinGame()) {
+                context.scene.start("winScene", {playGameScene: playGameScene});
+                return;
+            }
+            if (context.checkLoseGame()) {
+                context.scene.start("loseScene", {playGameScene: playGameScene});
+                return;
+            }
         });
     }
 
@@ -49,4 +60,16 @@ export default class playGameScene extends Phaser.Scene {
             step: 0,
         };
     }
+
+    checkWinGame() {
+        if (this.userGameParam.score >= this.gameBoard.task.needScore)
+            return true;
+        else
+            return false;
+    }
+
+    checkLoseGame() {
+        return this.gameBoard.task.maxStep === this.userGameParam.step;
+    }
+
 }
