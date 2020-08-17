@@ -1,3 +1,4 @@
+import {store} from "../store/";
 import {boardForm} from "../components/testData";
 import Tile from "../components/Tile";
 import ViewBoard from "../components/ViewBoard";
@@ -22,8 +23,8 @@ export default class GameBoard {
 
         // временный объект отвечающий за задание. todo: создать questManager.
         this.task = {
-            needScore: 200,
-            maxStep: 20
+            needScore: 2000,
+            maxStep: 200
         };
 
         // временный объект для построения игрового поля
@@ -40,8 +41,11 @@ export default class GameBoard {
         // количество свеже заполненных линий для учитывания задерки анимации
         this.countNewLineTile = 1;
 
+        // колличество удаленных за текущий ход фишек
         this.countRemoveTiles = 0;
 
+        // Колличество доступных в данных момент перемешиваний поля при отсутствии ходов.
+        this.countBoardResort = store.globalGameSettings.countBoardResort;
     }
 
     /**
@@ -112,7 +116,10 @@ export default class GameBoard {
                 this.countNewLineTile++;
             }
         }
+
         this.countNewLineTile = 1;
+
+        this.scene.checkStatusGame();
     }
 
     /**
@@ -188,6 +195,46 @@ export default class GameBoard {
             }
             if (this.check(i, j + 1, type)) {
                 this.removeMatchTile(i, j + 1, type);
+            }
+        }
+    }
+
+    /**
+     * Проверка наличия доступных игроку ходов.
+     * @returns {boolean}
+     */
+    checkHaveMove() {
+        for (let i = 0; i < this.board.height - 1; i++) {
+            for (let j = 0; j < this.board.width - 1; j++) {
+                if (this.board.boardForm[i][j].tile !== null) {
+                    const type = this.board.boardForm[i][j].tile.tileType;
+                    if (this.check(i, j + 1, type)) {
+                        return true;
+                    }
+
+                    if (this.check(i + 1, j, type)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Удалить все фишки.
+     */
+    deleteAllTiles() {
+        for (let i = 0; i < this.board.height ; i++) {
+            for (let j = 0; j < this.board.width; j++) {
+                if (this.board.boardForm[i][j].tile !== null) {
+                    // Запуск анимации удаления фишки.
+                    this.board.boardView.RemoveTileAnimation(this.board.boardForm[i][j].tile, this.board.boardForm[i][j].position, this.board.boardForm[i][j].tile.tileType);
+
+                    // Зануляем ссылку на фишку
+                    this.board.boardForm[i][j].tile = null;
+                }
             }
         }
     }

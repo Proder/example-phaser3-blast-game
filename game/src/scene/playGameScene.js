@@ -1,5 +1,6 @@
 import {store} from "../store/";
 import GameBoard from "../controler/GameBoard";
+import {globalTranslations, local} from "../localization/local";
 
 
 export default class playGameScene extends Phaser.Scene {
@@ -41,16 +42,6 @@ export default class playGameScene extends Phaser.Scene {
             context.UIPlayScene.events.emit('level_progress', context.userGameParam.score / context.gameBoard.task.needScore);
             context.UIPlayScene.events.emit('changeScore', context.userGameParam.score);
             context.UIPlayScene.events.emit('changeStepCount', context.gameBoard.task.maxStep - context.userGameParam.step);
-
-
-            if (context.checkWinGame()) {
-                context.scene.start("winScene", {playGameScene: playGameScene});
-                return;
-            }
-            if (context.checkLoseGame()) {
-                context.scene.start("loseScene", {playGameScene: playGameScene});
-                return;
-            }
         });
     }
 
@@ -61,6 +52,18 @@ export default class playGameScene extends Phaser.Scene {
         };
     }
 
+    checkStatusGame() {
+
+        if (this.checkWinGame()) {
+            this.scene.start("winScene", {playGameScene: playGameScene});
+            return;
+        }
+        if (this.checkLoseGame()) {
+            this.scene.start("loseScene", {playGameScene: playGameScene});
+            return;
+        }
+    }
+
     checkWinGame() {
         if (this.userGameParam.score >= this.gameBoard.task.needScore)
             return true;
@@ -69,7 +72,24 @@ export default class playGameScene extends Phaser.Scene {
     }
 
     checkLoseGame() {
+        if (!this.gameBoard.checkHaveMove()) {
+            if (this.gameBoard.countBoardResort === 0) {
+                return true;
+            } else {
+                this.gameBoard.countBoardResort--;
+
+                const context = this;
+                const callback = () => {
+                    context.gameBoard.deleteAllTiles();
+                    context.gameBoard.fillBoard();
+                };
+
+                this.time.delayedCall(1000, this.UIPlayScene.messageView, [globalTranslations[local].dontMove, callback], this.UIPlayScene);
+            }
+        }
+
         return this.gameBoard.task.maxStep === this.userGameParam.step;
     }
+
 
 }

@@ -12,6 +12,10 @@ export default class store {
         this.baseConfig.centreScreen.x = this.baseConfig.gameWidth / 2;
         this.baseConfig.centreScreen.y = this.baseConfig.gameHeight / 2;
 
+        this.globalGameSettings = {
+          countBoardResort: 1
+        };
+
     }
 
     addText(scene, text, position) {

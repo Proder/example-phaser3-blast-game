@@ -38,6 +38,11 @@ export default class UIPlayScene extends Phaser.Scene {
         })
     }
 
+
+    /**
+     * Отрисовать шкулу прогресса прохождения уровня.
+     * @param position - место отрисовки. (object {x, y})
+     */
     addProgressBar(position) {
         const context = this;
         const scale = .25;
@@ -75,7 +80,7 @@ export default class UIPlayScene extends Phaser.Scene {
     /**
      * Отрисовать счетчик оставшихся ходов.
      * @param position - место отрисовки. (object {x, y})
-     * @param margin - оступ для иконки (int)
+     * @param margin - отступ для иконки (int)
      */
     addStepLabel(position, margin) {
         const context = this;
@@ -100,7 +105,7 @@ export default class UIPlayScene extends Phaser.Scene {
     /**
      * Отрисовать счетчик набранных игроком очков.
      * @param position - место отрисовки. (object {x, y})
-     * @param margin - оступ для иконки (int)
+     * @param margin - отступ для иконки (int)
      */
     addScoreLabel(position, margin) {
         const context = this;
@@ -122,6 +127,10 @@ export default class UIPlayScene extends Phaser.Scene {
         })
     }
 
+    /**
+     * Отрисовать панель заданий.
+     * @param position - место отрисовки. (object {x, y})
+     */
     addQuestPanel(position) {
         const context = this;
         const scale = .31;
@@ -133,5 +142,34 @@ export default class UIPlayScene extends Phaser.Scene {
             y: position.y/* - 2*/
         });
         scoreText.setFontSize(26);
+    }
+
+    /**
+     * Показать короткое сообщение.
+     * @param message - текст сообщение. (string)
+     * @param callback - вызывается по завершению показа сообщения.
+     */
+    messageView(message, callback) {
+        const position = {
+            x: store.baseConfig.centreScreen.x,
+            y: store.baseConfig.centreScreen.y
+        };
+
+        const messageText = store.addText(this, message, {
+            x: position.x,
+            y: position.y - 50
+        });
+        messageText.setFontSize(40).setAlpha(0);
+
+        this.tweens.add({
+            targets: messageText,
+            alpha: 1,
+            duration: 1000,
+            yoyo: true,
+            ease: 'Sine.easeInOut',
+            onComplete: () => {
+                callback();
+            },
+        });
     }
 }

@@ -9,6 +9,7 @@ export const globalTranslations = {
             youWin: "Вы выиграла!",
             youLose: "Вы проиграли",
             needDial: "Набрать: ",
+            dontMove: "Нет ходов",
         }
 
 };
