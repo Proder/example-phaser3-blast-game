@@ -23,7 +23,7 @@ export default class GameBoard {
         // временный объект отвечающий за задание. todo: создать questManager.
         this.task = {
             needScore: 200,
-            maxStep: 10
+            maxStep: 20
         };
 
         // временный объект для построения игрового поля

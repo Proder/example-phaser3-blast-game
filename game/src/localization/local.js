@@ -8,6 +8,7 @@ export const globalTranslations = {
             score: "Очки",
             youWin: "Вы выиграла!",
             youLose: "Вы проиграли",
+            needDial: "Набрать: ",
         }
 
 };

@@ -30,6 +30,8 @@ export default class UIPlayScene extends Phaser.Scene {
         this.addStepLabel({x: 74, y: 38}, 10);
         this.addScoreLabel({x: store.baseConfig.gameWidth - 74, y: 38}, 10);
 
+        this.addQuestPanel({x: store.baseConfig.centreScreen.x, y: 135});
+
 
         this.events.on("changeScore", () => {
             console.log("UI changeScore");
@@ -42,14 +44,14 @@ export default class UIPlayScene extends Phaser.Scene {
 
         const progressText = store.addText(this, globalTranslations[local].progress, {
             x: position.x,
-            y: position.y - 18
+            y: position.y - 16
         });
         progressText.setFontSize(28);
 
-        this.add.sprite(position.x, position.y, "footing").setScale(scale);
+        this.add.sprite(position.x, position.y, "footing").setScale(1, scale);
 
-        this.add.sprite(position.x, position.y + 22, "progressBar", "progress_fon").setScale(scale);
-        let loadingProgress = this.add.sprite(position.x, position.y + 22, "progressBar", "progress").setScale(scale);
+        this.add.sprite(position.x, position.y + 20, "progressBar", "progress_fon").setScale(scale);
+        let loadingProgress = this.add.sprite(position.x, position.y + 20, "progressBar", "progress").setScale(scale);
 
         let shapeExp = this.make.graphics().setDepth(1).fillStyle(0x0000ff).beginPath();
         shapeExp.fillRect(loadingProgress.getLeftCenter().x - loadingProgress.displayWidth, loadingProgress.getTopCenter().y, loadingProgress.displayWidth, loadingProgress.displayHeight);
@@ -70,6 +72,11 @@ export default class UIPlayScene extends Phaser.Scene {
         });
     }
 
+    /**
+     * Отрисовать счетчик оставшихся ходов.
+     * @param position - место отрисовки. (object {x, y})
+     * @param margin - оступ для иконки (int)
+     */
     addStepLabel(position, margin) {
         const context = this;
         const scale = .3;
@@ -90,6 +97,11 @@ export default class UIPlayScene extends Phaser.Scene {
         })
     }
 
+    /**
+     * Отрисовать счетчик набранных игроком очков.
+     * @param position - место отрисовки. (object {x, y})
+     * @param margin - оступ для иконки (int)
+     */
     addScoreLabel(position, margin) {
         const context = this;
         const scale = .3;
@@ -108,5 +120,18 @@ export default class UIPlayScene extends Phaser.Scene {
 
             scoreText.setText(value);
         })
+    }
+
+    addQuestPanel(position) {
+        const context = this;
+        const scale = .31;
+
+        const questPanel = this.add.sprite(position.x, position.y, "panel-quest").setScale(scale);
+
+        const scoreText = store.addText(this, globalTranslations[local].needDial + this.playGameScene.gameBoard.task.needScore, {
+            x: position.x,
+            y: position.y/* - 2*/
+        });
+        scoreText.setFontSize(26);
     }
 }
