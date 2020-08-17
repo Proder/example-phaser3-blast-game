@@ -1,5 +1,5 @@
 import {store} from "../store/";
-import {boardForm} from "../components/testData";
+import {dataLevels} from "../components/testData";
 import Tile from "../components/Tile";
 import ViewBoard from "../components/ViewBoard";
 
@@ -13,12 +13,8 @@ export default class GameBoard {
         this.scene = scene;
 
 
-        this.board = {
-            width: 5,
-            height: 5,
-            boardForm: []
-        };
-        this.board.boardForm = boardForm;
+        this.board = dataLevels[this.scene.currentLevel];
+
         this.board.boardView = new ViewBoard(this);
 
         // временный объект отвечающий за задание. todo: создать questManager.
@@ -29,8 +25,8 @@ export default class GameBoard {
 
         // временный объект для построения игрового поля
         this.startPosition = {
-            x: 120,
-            y: 330,
+            x: store.baseConfig.centreScreen.x - 94 * (this.board.width / 2),
+            y: store.baseConfig.centreScreen.y - 94 * (this.board.height / 2),
             xMargin: 94,
             yMargin: 94
         };
@@ -57,7 +53,7 @@ export default class GameBoard {
             let y = this.startPosition.y + this.startPosition.yMargin * i;
 
             for (let j = 0; j < this.board.width; j++) {
-                let x = this.startPosition.x + this.startPosition.xMargin * j;
+                let x = this.startPosition.x + this.startPosition.xMargin * j + this.startPosition.xMargin / 2;
 
                 const boardItem = this.board.boardForm[i][j];
                 boardItem.tile = null;
@@ -226,7 +222,7 @@ export default class GameBoard {
      * Удалить все фишки.
      */
     deleteAllTiles() {
-        for (let i = 0; i < this.board.height ; i++) {
+        for (let i = 0; i < this.board.height; i++) {
             for (let j = 0; j < this.board.width; j++) {
                 if (this.board.boardForm[i][j].tile !== null) {
                     // Запуск анимации удаления фишки.
@@ -247,7 +243,7 @@ export default class GameBoard {
      * @returns {boolean} - найдено ли совпадение.
      */
     check(i, j, type) {
-        return !!this.board.boardForm[i] && !!this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile !== null && this.board.boardForm[i][j].tile.tileType === type;
+        return this.board.boardForm[i] && this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile && this.board.boardForm[i][j].tile !== null && this.board.boardForm[i][j].tile.tileType === type;
     }
 
 }

@@ -22,8 +22,11 @@ export default class playGameScene extends Phaser.Scene {
 
         this.UIPlayScene = this.scene.get("UIPlayScene");
 
+        this.currentLevel = 0;
+
         // создаем игровое поле.
         this.gameBoard = new GameBoard(this);
+        this.cameras.main.zoom = this.gameBoard.board.scale;
         this.gameBoard.buildBoardForm();
         this.gameBoard.fillBoard();
 
