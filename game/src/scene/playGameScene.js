@@ -8,6 +8,13 @@ export default class playGameScene extends Phaser.Scene {
     constructor() {
         super("playGameScene");
 
+        this.delayShowWinLoseScene = 1000;
+    }
+
+    init(data) {
+        this.currentLevel = data.numLevel;
+
+        this.removeListener();
     }
 
     preload() {
@@ -22,7 +29,6 @@ export default class playGameScene extends Phaser.Scene {
 
         this.UIPlayScene = this.scene.get("UIPlayScene");
 
-        this.currentLevel = 0;
 
         // создаем игровое поле.
         this.gameBoard = new GameBoard(this);
@@ -48,6 +54,16 @@ export default class playGameScene extends Phaser.Scene {
         });
     }
 
+
+    /**
+     * Удалить созданные слушатели. (перед закрытием сцены)
+     */
+    removeListener() {
+        console.log("removeListener");
+
+        this.events.off("changeScore");
+    }
+
     initUserGameParam() {
         return {
             score: 0,
@@ -58,11 +74,20 @@ export default class playGameScene extends Phaser.Scene {
     checkStatusGame() {
 
         if (this.checkWinGame()) {
-            this.scene.start("winScene", {playGameScene: playGameScene});
+            const context = this;
+            setTimeout(() => {
+                context.scene.pause();
+                context.scene.launch("winScene", {playGameScene: playGameScene});
+            }, this.delayShowWinLoseScene);
+
             return;
         }
         if (this.checkLoseGame()) {
-            this.scene.start("loseScene", {playGameScene: playGameScene});
+            const context = this;
+            setTimeout(() => {
+                context.scene.pause();
+                context.scene.launch("loseScene", {playGameScene: playGameScene});
+            }, this.delayShowWinLoseScene);
             return;
         }
     }

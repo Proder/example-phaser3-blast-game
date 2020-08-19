@@ -14,6 +14,7 @@ export default class UIPlayScene extends Phaser.Scene {
     init(data) {
         this.playGameScene = data.playGameScene;
 
+        this.removeListener();
     }
 
     preload() {
@@ -31,13 +32,18 @@ export default class UIPlayScene extends Phaser.Scene {
         this.addScoreLabel({x: store.baseConfig.gameWidth - 74, y: 38}, 10);
 
         this.addQuestPanel({x: store.baseConfig.centreScreen.x, y: 135});
-
-
-        this.events.on("changeScore", () => {
-            console.log("UI changeScore");
-        })
     }
 
+    /**
+     * Удалить созданные слушатели. (перед закрытием сцены)
+     */
+    removeListener() {
+        console.log("removeListener");
+
+        this.events.off("level_progress");
+        this.events.off("changeStepCount");
+        this.events.off("changeScore");
+    }
 
     /**
      * Отрисовать шкулу прогресса прохождения уровня.

@@ -6,10 +6,13 @@ export const globalTranslations = {
             progress: "Прогресс",
             time: "Время",
             score: "Очки",
-            youWin: "Вы выиграла!",
-            youLose: "Вы проиграли",
+            win: "Победа!",
+            lose: "Поражение",
             needDial: "Набрать: ",
             dontMove: "Нет ходов",
+            next: "Далее",
+            restart: "Переиграть",
+            play: "Играть"
         }
 
 };
