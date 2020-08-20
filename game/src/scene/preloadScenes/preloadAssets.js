@@ -54,7 +54,7 @@ export default class preloadAssets extends Phaser.Scene {
         imgButton.setScale(0.6, 0.5);
 
 
-        const textButton = store.addText(this, globalTranslations[local].play, {
+        const textButton = store.gameFunc.addText(this, globalTranslations[local].play, {
             x: position.x,
             y: position.y - 2
         });
@@ -74,13 +74,13 @@ export default class preloadAssets extends Phaser.Scene {
     }
 
     /**
-     * todo: Визуализация предзагрузки.
+     * Визуализация предзагрузки.
      */
     drawPreload(position) {
         const context = this;
         const scale = .4;
 
-        const progressText = store.addText(this, globalTranslations[local].loading, {
+        const progressText = store.gameFunc.addText(this, globalTranslations[local].loading, {
             x: position.x,
             y: position.y - 25
         });

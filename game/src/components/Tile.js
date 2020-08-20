@@ -33,7 +33,7 @@ export default class Tile extends Phaser.GameObjects.Sprite {
         if (allowMove) {
             this.board.removeMatchTile(this.boartPosition.i, this.boartPosition.j, this.tileType);
 
-            console.log("Tile", this.board.countRemoveTiles);
+            console.log("count Remove Tiles", this.board.countRemoveTiles);
             this.board.scene.events.emit('changeScore', {countRemoveTiles: this.board.countRemoveTiles});
 
             this.board.countRemoveTiles = 0;

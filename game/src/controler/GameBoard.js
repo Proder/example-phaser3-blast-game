@@ -17,13 +17,16 @@ export default class GameBoard {
 
         this.board.boardView = new ViewBoard(this);
 
-        // временный объект отвечающий за задание. todo: создать questManager.
-        this.task = {
-            needScore: 20,
-            maxStep: 2
-        };
+        // временный массив заданий. todo: создать questManager.
+        this.task = [{
+            needScore: 100,
+            maxStep: 10
+        }, {
+            needScore: 200,
+            maxStep: 12
+        }];
 
-        // временный объект для построения игрового поля
+        // объект для построения игрового поля. Центрирование игрового поля и ратояние между фишками.
         this.startPosition = {
             x: store.baseConfig.centreScreen.x - 94 * (this.board.width / 2),
             y: store.baseConfig.centreScreen.y - 94 * (this.board.height / 2),
@@ -31,16 +34,16 @@ export default class GameBoard {
             yMargin: 94
         };
 
-        // есть ли в данный момент перемещающиеся фишки
+        // Количество перемещаймых в данный момент фишек
         this.countMovedTiles = 0;
 
-        // количество свеже заполненных линий для учитывания задерки анимации
+        // Количество свеже заполненных линий для учитывания задерки анимации
         this.countNewLineTile = 1;
 
-        // колличество удаленных за текущий ход фишек
+        // Количество удаленных за текущий ход фишек
         this.countRemoveTiles = 0;
 
-        // Колличество доступных в данных момент перемешиваний поля при отсутствии ходов.
+        // Количество доступных в данных момент перемешиваний поля при отсутствии ходов.
         this.countBoardResort = store.globalGameSettings.countBoardResort;
     }
 
@@ -63,12 +66,9 @@ export default class GameBoard {
                     y: y
                 };
 
-                if (boardItem.visible) {
+                if (boardItem.visible)
                     this.board.boardView.AddBackgroundTile(x, y);
 
-                    // перемещается ли сейчас фишка в данную ячейку
-                    boardItem.nowMoved = false;
-                }
             }
         }
 
@@ -92,6 +92,7 @@ export default class GameBoard {
                     if (isNewTile) {
                         flagNewTileLine = true;
                     } else {
+                        // зануляем ссылку в ячейке из которой перемещаем фишку
                         this.board.boardForm[boardItem.tile.boartPosition.i][boardItem.tile.boartPosition.j].tile = null;
                     }
 
@@ -115,6 +116,7 @@ export default class GameBoard {
 
         this.countNewLineTile = 1;
 
+        // Проверяйем наличие проигрыша/выигрыша
         this.scene.checkStatusGame();
     }
 
@@ -148,7 +150,7 @@ export default class GameBoard {
     }
 
     /**
-     * Проветка возможности хода. (Проверяет наличие фишек нужного типа в соседних ячейках)
+     * Проветка возможности хода. (Проверяет наличие фишек указанного типа в соседних ячейках)
      * @param i - позиция ячейки рядом с которой нужно выполнить проверку. (int)
      * @param j - позиция ячейки рядом с которой нужно выполнить проверку. (int)
      * @param type - тип проверяемой фишки. (string)
@@ -236,14 +238,19 @@ export default class GameBoard {
     }
 
     /**
-     * Совпадает ли содержимое указанной ячейки с проверяемым типом фишек.
+     * Совпадает ли содержимое указанной ячейки с указанным типом фишек.
      * @param i - позиция ячейки для проверки. (int)
      * @param j - позиция ячейки для проверки. (int)
      * @param type - тип фишки для проверки. (string)
      * @returns {boolean} - найдено ли совпадение.
      */
     check(i, j, type) {
-        return this.board.boardForm[i] && this.board.boardForm[i][j] && this.board.boardForm[i][j].visible && this.board.boardForm[i][j].tile && this.board.boardForm[i][j].tile !== null && this.board.boardForm[i][j].tile.tileType === type;
+        return this.board.boardForm[i] &&
+            this.board.boardForm[i][j] &&
+            this.board.boardForm[i][j].visible &&
+            this.board.boardForm[i][j].tile &&
+            this.board.boardForm[i][j].tile !== null &&
+            this.board.boardForm[i][j].tile.tileType === type;
     }
 
 }

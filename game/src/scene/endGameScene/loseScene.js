@@ -10,11 +10,6 @@ export default class loseScene extends Phaser.Scene {
         this.speedShowScene = 600;
     }
 
-    preload() {
-        console.log("loseScene: preload")
-
-    }
-
     create() {
         this.addOvershadow();
 
@@ -61,7 +56,7 @@ export default class loseScene extends Phaser.Scene {
      * Отрисовать заголовок окна
      */
     addHeaderText(position) {
-        const headerText = store.addText(this, globalTranslations[local].lose, {
+        const headerText = store.gameFunc.addText(this, globalTranslations[local].lose, {
             x: position.x,
             y: position.y
         });
@@ -83,7 +78,7 @@ export default class loseScene extends Phaser.Scene {
         this.groupWindowContent.add(imgButton);
 
 
-        const textButton = store.addText(this, globalTranslations[local].restart, {
+        const textButton = store.gameFunc.addText(this, globalTranslations[local].restart, {
             x: position.x,
             y: position.y - 2
         });

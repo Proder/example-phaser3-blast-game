@@ -6,13 +6,7 @@ export default class winScene extends Phaser.Scene {
     constructor() {
         super("winScene");
 
-        this.speedShowScene = 600;
         this.layers = 8;
-    }
-
-    preload() {
-        console.log("winScene: preload")
-
     }
 
     create() {
@@ -62,7 +56,7 @@ export default class winScene extends Phaser.Scene {
      * Отрисовать заголовок окна
      */
     addHeaderText(position) {
-        const headerText = store.addText(this, globalTranslations[local].win, {
+        const headerText = store.gameFunc.addText(this, globalTranslations[local].win, {
             x: position.x,
             y: position.y
         });
@@ -84,7 +78,7 @@ export default class winScene extends Phaser.Scene {
         this.groupWindowContent.add(imgButton);
 
 
-        const textButton = store.addText(this, globalTranslations[local].next, {
+        const textButton = store.gameFunc.addText(this, globalTranslations[local].next, {
             x: position.x,
             y: position.y - 2
         });

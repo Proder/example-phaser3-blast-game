@@ -18,14 +18,4 @@ export default class store {
 
     }
 
-    addText(scene, text, position) {
-        return scene.add.text(position.x, position.y, text,
-            {
-                fontFamily: 'Marvin',
-                fontSize: 25,
-                color: '#fff',
-                align: 'center',
-            })
-            .setDepth(10).setOrigin(0.5);
-    }
 }

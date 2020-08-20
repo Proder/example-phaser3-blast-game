@@ -17,10 +17,6 @@ export default class UIPlayScene extends Phaser.Scene {
         this.removeListener();
     }
 
-    preload() {
-
-    }
-
     create() {
 
         console.log("UIPlayScene create");
@@ -46,14 +42,14 @@ export default class UIPlayScene extends Phaser.Scene {
     }
 
     /**
-     * Отрисовать шкулу прогресса прохождения уровня.
+     * Отрисовать шкалу прогресса прохождения уровня.
      * @param position - место отрисовки. (object {x, y})
      */
     addProgressBar(position) {
         const context = this;
         const scale = .25;
 
-        const progressText = store.addText(this, globalTranslations[local].progress, {
+        const progressText = store.gameFunc.addText(this, globalTranslations[local].progress, {
             x: position.x,
             y: position.y - 16
         });
@@ -95,7 +91,7 @@ export default class UIPlayScene extends Phaser.Scene {
         const button = this.add.sprite(position.x, position.y, "button-1").setScale(scale);
         this.add.sprite(position.x - button.displayWidth / 2 + margin, position.y, "money-icon").setScale(scale);
 
-        const stepCountText = store.addText(this, this.playGameScene.gameBoard.task.maxStep, {
+        const stepCountText = store.gameFunc.addText(this, this.playGameScene.gameBoard.task[this.playGameScene.currentLevel].maxStep, {
             x: position.x + margin,
             y: position.y - 2
         });
@@ -120,7 +116,7 @@ export default class UIPlayScene extends Phaser.Scene {
         const button = this.add.sprite(position.x, position.y, "button-2").setScale(scale);
         this.add.sprite(position.x + button.displayWidth / 2 - margin, position.y, "money-icon").setScale(scale);
 
-        const scoreText = store.addText(this, 0, {
+        const scoreText = store.gameFunc.addText(this, 0, {
             x: position.x - margin,
             y: position.y - 2
         });
@@ -143,9 +139,9 @@ export default class UIPlayScene extends Phaser.Scene {
 
         const questPanel = this.add.sprite(position.x, position.y, "panel-quest").setScale(scale);
 
-        const scoreText = store.addText(this, globalTranslations[local].needDial + this.playGameScene.gameBoard.task.needScore, {
+        const scoreText = store.gameFunc.addText(this, globalTranslations[local].needDial + this.playGameScene.gameBoard.task[this.playGameScene.currentLevel].needScore, {
             x: position.x,
-            y: position.y/* - 2*/
+            y: position.y
         });
         scoreText.setFontSize(26);
     }
@@ -161,7 +157,7 @@ export default class UIPlayScene extends Phaser.Scene {
             y: store.baseConfig.centreScreen.y
         };
 
-        const messageText = store.addText(this, message, {
+        const messageText = store.gameFunc.addText(this, message, {
             x: position.x,
             y: position.y - 50
         });

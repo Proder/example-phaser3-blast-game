@@ -17,11 +17,6 @@ export default class playGameScene extends Phaser.Scene {
         this.removeListener();
     }
 
-    preload() {
-        console.log("playGameScene: preload")
-
-    }
-
     create() {
         console.log("playGameScene: create");
 
@@ -32,14 +27,20 @@ export default class playGameScene extends Phaser.Scene {
 
         // создаем игровое поле.
         this.gameBoard = new GameBoard(this);
+
+        // масштабируем игровое поле
         this.cameras.main.zoom = this.gameBoard.board.scale;
+
+        // заполнияем игровое поле
         this.gameBoard.buildBoardForm();
         this.gameBoard.fillBoard();
 
         this.initEventListener();
     }
 
-
+    /**
+     * Инициализироть необходимые слушатели событий.
+     */
     initEventListener() {
         const context = this;
         this.events.on('changeScore', function (data) {
@@ -48,9 +49,9 @@ export default class playGameScene extends Phaser.Scene {
             context.userGameParam.score += Math.pow(data.countRemoveTiles, 2);
             context.userGameParam.step++;
 
-            context.UIPlayScene.events.emit('level_progress', context.userGameParam.score / context.gameBoard.task.needScore);
+            context.UIPlayScene.events.emit('level_progress', context.userGameParam.score / context.gameBoard.task[context.currentLevel].needScore);
             context.UIPlayScene.events.emit('changeScore', context.userGameParam.score);
-            context.UIPlayScene.events.emit('changeStepCount', context.gameBoard.task.maxStep - context.userGameParam.step);
+            context.UIPlayScene.events.emit('changeStepCount', context.gameBoard.task[context.currentLevel].maxStep - context.userGameParam.step);
         });
     }
 
@@ -64,6 +65,10 @@ export default class playGameScene extends Phaser.Scene {
         this.events.off("changeScore");
     }
 
+    /**
+     * Возвращает объект с игровыми параметрами игрока. todo: создать компонент игрока.
+     * @returns {{score: number, step: number}}
+     */
     initUserGameParam() {
         return {
             score: 0,
@@ -71,6 +76,9 @@ export default class playGameScene extends Phaser.Scene {
         };
     }
 
+    /**
+     * Проверка состояния игры. (победа/поражение/наличе ходов)
+     */
     checkStatusGame() {
 
         if (this.checkWinGame()) {
@@ -82,6 +90,7 @@ export default class playGameScene extends Phaser.Scene {
 
             return;
         }
+
         if (this.checkLoseGame()) {
             const context = this;
             setTimeout(() => {
@@ -92,20 +101,33 @@ export default class playGameScene extends Phaser.Scene {
         }
     }
 
+    /**
+     * Проверка условий прохождения уровня.
+     * @returns {boolean}
+     */
     checkWinGame() {
-        if (this.userGameParam.score >= this.gameBoard.task.needScore)
+        if (this.userGameParam.score >= this.gameBoard.task[this.currentLevel].needScore)
             return true;
         else
             return false;
     }
 
+    /**
+     * Проверка условий поражения на уровне.
+     * @returns {boolean}
+     */
     checkLoseGame() {
+        // есть ли доступные игроку ходы.
         if (!this.gameBoard.checkHaveMove()) {
+
+            // есть ли доступное игроку перемешивания игрового поля
             if (this.gameBoard.countBoardResort === 0) {
                 return true;
             } else {
+                // декрементируем количество перемешиваний игрового поля
                 this.gameBoard.countBoardResort--;
 
+                // перемешиваем игровое поля. (фактически удаляем все фишки и заполняем поле заного)
                 const context = this;
                 const callback = () => {
                     context.gameBoard.deleteAllTiles();
@@ -116,7 +138,7 @@ export default class playGameScene extends Phaser.Scene {
             }
         }
 
-        return this.gameBoard.task.maxStep === this.userGameParam.step;
+        return this.gameBoard.task[this.currentLevel].maxStep === this.userGameParam.step;
     }
 
 
