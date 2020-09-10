@@ -53,10 +53,10 @@ export default class GameBoard {
     buildBoardForm() {
 
         for (let i = 0; i < this.board.height; i++) {
-            let y = this.startPosition.y + this.startPosition.yMargin * i;
+            const y = this.startPosition.y + this.startPosition.yMargin * i;
 
             for (let j = 0; j < this.board.width; j++) {
-                let x = this.startPosition.x + this.startPosition.xMargin * j + this.startPosition.xMargin / 2;
+                const x = this.startPosition.x + this.startPosition.xMargin * j + this.startPosition.xMargin / 2;
 
                 const boardItem = this.board.boardForm[i][j];
                 boardItem.tile = null;
@@ -129,13 +129,16 @@ export default class GameBoard {
      */
     searchTileForMove(i, j, boardItem) {
         if (boardItem.moveOf.length > 0) {
-            let nextI = boardItem.moveOf[0].i;
-            let nextJ = boardItem.moveOf[0].j;
-            let nextBoardItem = this.board.boardForm[nextI][nextJ];
+            const nextI = boardItem.moveOf[0].i;
+            const nextJ = boardItem.moveOf[0].j;
+
+            const nextBoardItem = this.board.boardForm[nextI][nextJ];
+
             if (nextBoardItem.tile !== null && nextBoardItem.tile.active) {
                 return [nextBoardItem.tile, false];
             } else
                 return this.searchTileForMove(i, j, nextBoardItem);
+
         } else {
             // Создать новую фишку. (todo: не предусматриваю переиспользование удаляемых объектов)
             const newTile = new Tile(this.scene, boardItem.position.x, boardItem.position.y);
