@@ -77,7 +77,6 @@ export default class preloadAssets extends Phaser.Scene {
      * Визуализация предзагрузки.
      */
     drawPreload(position) {
-        const context = this;
         const scale = .4;
 
         const progressText = store.gameFunc.addText(this, globalTranslations[local].loading, {
@@ -89,18 +88,19 @@ export default class preloadAssets extends Phaser.Scene {
         this.add.sprite(position.x, position.y, "footing").setScale(scale);
 
         this.add.sprite(position.x, position.y + 30, "progressBar", "progress_fon").setScale(scale);
-        let loadingProgress = this.add.sprite(position.x, position.y + 30, "progressBar", "progress").setScale(scale);
+        let progressLine = this.add.sprite(position.x, position.y + 30, "progressBar", "progress").setScale(scale);
 
-        let shapeExp = this.make.graphics().setDepth(1).fillStyle(0x0000ff).beginPath();
-        shapeExp.fillRect(loadingProgress.getLeftCenter().x - loadingProgress.displayWidth, loadingProgress.getTopCenter().y, loadingProgress.displayWidth, loadingProgress.displayHeight);
 
-        let mask = shapeExp.createGeometryMask();
-        loadingProgress.setMask(mask);
+        const shapeExp = this.make.graphics();
+        shapeExp.fillRect(progressLine.getLeftCenter().x - progressLine.displayWidth, progressLine.getTopCenter().y,
+            progressLine.displayWidth, progressLine.displayHeight);
 
-        this.load.on('progress', function (value) {
-            context.tweens.add({
+        progressLine.setMask(shapeExp.createGeometryMask());
+
+        this.load.on('progress', (value) => {
+            this.tweens.add({
                 targets: shapeExp,
-                x: value * loadingProgress.displayWidth,
+                x: value * progressLine.displayWidth,
                 duration: 400,
                 ease: 'Sine.easeInOut'
             });
